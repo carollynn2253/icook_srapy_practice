@@ -4,7 +4,7 @@ from icook.items import CategoryItem
 from icook.items import SubCategoryItem
 from bs4 import BeautifulSoup
 
-#source ~/Desktop/scarpy/bin/activate
+#source ~./env/bin/activate
 
 
 class IcookSpider(scrapy.Spider):
