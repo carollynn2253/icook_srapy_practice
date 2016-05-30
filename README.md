@@ -2,8 +2,8 @@ icook scrapy prictice
 --
 Simple crawler practice with python scrapy. (https://icook.tw/)
 
-# Installation (Mac OSX)
-
+Installation (Mac OSX)
+--
 #### Setup python evn
 ```
 - brew install python (pip and setuptools are included)
