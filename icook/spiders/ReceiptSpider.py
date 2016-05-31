@@ -14,6 +14,7 @@ PAT = re.compile('https://icook.tw/categories/[0-9]+')
 
 # TABLE_CATEGORY = 'test_categories'
 TABLE_CATEGORY = 'categories'
+# TABLE_RECEIPT = 'test_receipts'
 TABLE_RECEIPT = 'receipts'
 
 #source ~/Desktop/scarpy/bin/activate

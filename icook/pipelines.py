@@ -8,6 +8,11 @@
 import mysql.connector
 from mysql.connector import Error
 
+# TABLE_CATEGORY = 'test_categories'
+TABLE_CATEGORY = 'categories'
+# TABLE_RECEIPT = 'test_receipts'
+TABLE_RECEIPT = 'receipts'
+
 class IcookPipeline(object):
     def open_spider(self, spider):
         self.conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
@@ -36,11 +41,11 @@ class IcookPipeline(object):
 
     def insert_category(self, category_name, category_link, parent_id):
         if parent_id:
-            query = "INSERT INTO categories(category_name, category_link, parent_id) " \
+            query = "INSERT INTO " + TABLE_CATEGORY + " (category_name, category_link, parent_id) " \
                     "VALUES(%s,%s,%s)"
             args = (category_name, category_link, parent_id)
         else:
-            query = "INSERT INTO categories(category_name, category_link) " \
+            query = "INSERT INTO  " + TABLE_CATEGORY + " (category_name, category_link) " \
                     "VALUES(%s,%s)"
             args = (category_name, category_link)
 
@@ -66,6 +71,8 @@ class ReceiptPipline(object):
     def open_spider(self, spider):
         self.conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
         self.cursor = self.conn.cursor()
+        self.cursor.execute("SET NAMES utf8mb4")
+
 
     def close_spider(self, spider):
         self.cursor.close()
@@ -80,7 +87,7 @@ class ReceiptPipline(object):
         return item
 
     def insert_receipt(self, category_id, receipt_title, receipt_link):
-        query = "INSERT INTO receipts(category_id, receipt_title, receipt_link) " \
+        query = "INSERT INTO  " + TABLE_RECEIPT + " (category_id, receipt_title, receipt_link) " \
                 "VALUES(%s,%s,%s)"
         args = (category_id, receipt_title, receipt_link)
 
