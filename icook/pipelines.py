@@ -8,6 +8,8 @@
 import mysql.connector
 from mysql.connector import Error
 
+import json
+
 # TABLE_CATEGORY = 'test_categories'
 TABLE_CATEGORY = 'categories'
 # TABLE_RECEIPT = 'test_receipts'
@@ -80,7 +82,7 @@ class ReceiptPipline(object):
 
     def process_item(self, item, spider):
         if spider.name not in ['receipt']:
-            print 'not receipt'
+            # print 'not receipt'
             return item
 
         self.insert_receipt(item['category_id'], item['receipt_title'], item['receipt_link'])
@@ -105,3 +107,15 @@ class ReceiptPipline(object):
 
         except Error as error:
             print(error)
+
+class DetailPipline(object):
+    def process_item(self, item, spider):
+        if spider.name not in ['detail']:
+            # print 'not detail'
+            return item
+
+        file_name = 'icook_json/' + str(item['receipt_id']) + '.json'
+        self.file = open(file_name, 'wb')
+        json_string = json.dumps(item, default=lambda o: o.__dict__, sort_keys=False, indent=4)
+        self.file.write(json_string)
+        return item

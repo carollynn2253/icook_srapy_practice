@@ -10,6 +10,7 @@ __pycache__/
 .Python
 env/
 build/
+icook_json/
 develop-eggs/
 dist/
 downloads/

@@ -67,6 +67,7 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
    'icook.pipelines.IcookPipeline': 300,
    'icook.pipelines.ReceiptPipline': 400,
+   'icook.pipelines.DetailPipline': 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

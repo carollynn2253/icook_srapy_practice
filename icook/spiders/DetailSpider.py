@@ -8,14 +8,15 @@ from bs4 import BeautifulSoup
 import datetime
 import time
 import re
+import json
 import mysql.connector
 from mysql.connector import Error
 
 DELAY_PAGE_TIME = 1
 PAT = re.compile('https://icook.tw/recipes/[0-9]+')
 
-TABLE_RECEIPT = 'test_receipts'
-# TABLE_RECEIPT = 'receipts'
+# TABLE_RECEIPT = 'test_receipts'
+TABLE_RECEIPT = 'receipts'
 
 #source ~/Desktop/scarpy/bin/activate
 
@@ -49,7 +50,7 @@ class IcookSpider(scrapy.Spider):
         try:
             conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
             cursor = conn.cursor()
-            query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s"
+            query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s LIMIT 1"
             cursor.execute(query, (url,))
 
             row = cursor.fetchone()
@@ -66,17 +67,35 @@ class IcookSpider(scrapy.Spider):
             cursor.close()
             conn.close()
 
+    def set_receipt_finish(self, receipt_id):
+        # print category_id
+        try:
+            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            cursor = conn.cursor()
+            query = """UPDATE """ + TABLE_RECEIPT + """ SET finish = %s WHERE id = %s """
+            cursor.execute(query, (1,receipt_id))
+            conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            cursor.close()
+            conn.close()
+
 
     start_urls = query_receipt_links()
 
     def parse(self, response):
+        time.sleep(DELAY_PAGE_TIME)
+
         res = BeautifulSoup(response.body, "lxml")
         receipt_id = self.query_receipt_id(response.url)
 
         receipt_detail = res.select('.recipe-detail')[0]
 
         title = receipt_detail.select('h1')[0].text
-        print title
+        # print title
         image = receipt_detail.select('.row > .col-md-8 > .picture-frame > .strip > .main-pic')[0]['src']
         # print image
         view_count = receipt_detail.select('.row > .col-md-8 > .func > .meta > .views-count')[0].text.replace(",", "")
@@ -112,6 +131,7 @@ class IcookSpider(scrapy.Spider):
                 list_of_steps_item.append(step_item)
         # print list_of_steps_item
 
+        self.set_receipt_finish(receipt_id)
         yield self.createDetailItem(receipt_id, title, image, view_count, favorite_count, introduction, list_of_ingredient_item, list_of_steps_item)
         # print '================================================='
 

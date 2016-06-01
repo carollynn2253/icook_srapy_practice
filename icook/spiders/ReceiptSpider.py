@@ -9,7 +9,7 @@ import re
 import mysql.connector
 from mysql.connector import Error
 
-DELAY_PAGE_TIME = 4
+DELAY_PAGE_TIME = 1
 PAT = re.compile('https://icook.tw/categories/[0-9]+')
 
 # TABLE_CATEGORY = 'test_categories'
