@@ -150,14 +150,18 @@ class IcookSpider(scrapy.Spider):
             step_item = StepItem()
             if not step.select('.media > .step-img'):
                 step_item['step_image'] = ""
-                step_item['step_detail'] = step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')[1]
-                # print step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')[1]
+                if len(step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')) > 1:
+                    step_item['step_detail'] = step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')[1]
+                else:
+                    step_item['step_detail'] = ""
                 list_of_steps_item.append(step_item)
 
             else:
                 step_item['step_image'] = step.select('.media > .step-img > .strip')[0]['href']
-                step_item['step_detail'] = step.select('.media > .step-img > .strip')[0]['data-strip-caption']
-                # print step.select('.media > .step-img > .strip')[0]['data-strip-caption']
+                if len(step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')) > 1:
+                    step_item['step_detail'] = step.select('.media > .media-body')[0].text.replace(" ", "").strip().split('\n')[1]
+                else:
+                    step_item['step_detail'] = ""
                 list_of_steps_item.append(step_item)
         # print list_of_steps_item
 
