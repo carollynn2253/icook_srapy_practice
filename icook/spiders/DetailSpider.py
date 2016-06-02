@@ -50,13 +50,26 @@ class IcookSpider(scrapy.Spider):
         try:
             conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
             cursor = conn.cursor()
-            query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s LIMIT 1"
+            # query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s LIMIT 1"
+            query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s"
             cursor.execute(query, (url,))
 
-            row = cursor.fetchone()
+            # row = cursor.fetchone()
+            #
+            # if row is not None:
+            #     return row[0]
+            # else:
+            #     return -1
 
-            if row is not None:
-                return row[0]
+            rows = cursor.fetchall()
+            ids = [x[0] for x in rows]
+
+            if ids is not None:
+                for receipt_id in ids[1:]:
+                    if receipt_id is not None:
+                        # print receipt_id
+                        self.set_receipt_repeated(receipt_id)
+                return ids[0]
             else:
                 return -1
 
@@ -83,6 +96,22 @@ class IcookSpider(scrapy.Spider):
             cursor.close()
             conn.close()
 
+    def set_receipt_repeated(self, receipt_id):
+        # print category_id
+        try:
+            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            cursor = conn.cursor()
+            query = """UPDATE """ + TABLE_RECEIPT + """ SET finish = %s WHERE id = %s """
+            cursor.execute(query, (2,receipt_id))
+            conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            cursor.close()
+            conn.close()
+
 
     start_urls = query_receipt_links()
 
@@ -100,7 +129,8 @@ class IcookSpider(scrapy.Spider):
         # print image
         view_count = receipt_detail.select('.row > .col-md-8 > .func > .meta > .views-count')[0].text.replace(",", "")
         # print view_count
-        favorite_count = receipt_detail.select('.row > .col-md-8 > .func > .meta > .fav-count')[0]['binding-counts']
+        # favorite_count = receipt_detail.select('.row > .col-md-8 > .func > .meta > .fav-count')[0]['binding-counts']
+        favorite_count = receipt_detail.select('.row > .col-md-8 > .func > .meta > .fav-count')[0].text
         # print favorite_count
         introduction = receipt_detail.select('.row > .col-md-8 > .recipe-description > div > p')[0].text
         # print introduction
