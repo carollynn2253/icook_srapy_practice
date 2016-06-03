@@ -10,6 +10,7 @@ import time
 import re
 import json
 import mysql.connector
+print "2"
 from mysql.connector import Error
 
 DELAY_PAGE_TIME = 1
