@@ -18,7 +18,7 @@ PAT = re.compile('https://icook.tw/recipes/[0-9]+')
 # TABLE_RECEIPT = 'test_receipts'
 TABLE_RECEIPT = 'receipts'
 
-#source ~/Desktop/scarpy/bin/activate
+# source ~/Desktop/scarpy/bin/activate
 
 
 class IcookSpider(scrapy.Spider):
@@ -26,7 +26,7 @@ class IcookSpider(scrapy.Spider):
 
     def query_receipt_links():
         try:
-            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            conn = mysql.connector.connect(host='localhost', database='icook', user='root', password='root', port='8889')
             cursor = conn.cursor()
             query = "SELECT receipt_link FROM " + TABLE_RECEIPT + " WHERE finish = %s"
             cursor.execute(query, (0,))
@@ -48,7 +48,7 @@ class IcookSpider(scrapy.Spider):
         # print url
 
         try:
-            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            conn = mysql.connector.connect(host='localhost', database='icook', user='root', password='root', port='8889')
             cursor = conn.cursor()
             # query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s LIMIT 1"
             query = "SELECT id FROM " + TABLE_RECEIPT + " WHERE receipt_link =  %s"
@@ -83,10 +83,10 @@ class IcookSpider(scrapy.Spider):
     def set_receipt_finish(self, receipt_id):
         # print category_id
         try:
-            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            conn = mysql.connector.connect(host='localhost', database='icook', user='root', password='root', port='8889')
             cursor = conn.cursor()
             query = """UPDATE """ + TABLE_RECEIPT + """ SET finish = %s WHERE id = %s """
-            cursor.execute(query, (1,receipt_id))
+            cursor.execute(query, (1, receipt_id))
             conn.commit()
 
         except Error as e:
@@ -99,10 +99,10 @@ class IcookSpider(scrapy.Spider):
     def set_receipt_repeated(self, receipt_id):
         # print category_id
         try:
-            conn = mysql.connector.connect(host='localhost',database='icook',user='root',password='root', port='8889')
+            conn = mysql.connector.connect(host='localhost', database='icook', user='root', password='root', port='8889')
             cursor = conn.cursor()
             query = """UPDATE """ + TABLE_RECEIPT + """ SET finish = %s WHERE id = %s """
-            cursor.execute(query, (2,receipt_id))
+            cursor.execute(query, (2, receipt_id))
             conn.commit()
 
         except Error as e:
@@ -111,7 +111,6 @@ class IcookSpider(scrapy.Spider):
         finally:
             cursor.close()
             conn.close()
-
 
     start_urls = query_receipt_links()
 
@@ -168,7 +167,6 @@ class IcookSpider(scrapy.Spider):
         self.set_receipt_finish(receipt_id)
         yield self.createDetailItem(receipt_id, title, image, view_count, favorite_count, introduction, list_of_ingredient_item, list_of_steps_item)
         # print '================================================='
-
 
     def createDetailItem(self, receipt_id, title, image, view_count, fav_count, introduction, ingredient, step):
         detail_item = DetailItem()
