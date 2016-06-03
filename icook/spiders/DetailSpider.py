@@ -21,7 +21,7 @@ TABLE_RECEIPT = 'receipts'
 # source ~/Desktop/scarpy/bin/activate
 
 
-class IcookSpider(scrapy.Spider):
+class DetailSpider(scrapy.Spider):
     name = "detail"
 
     def query_receipt_links():
